@@ -1,34 +1,30 @@
-def caesar_cipher(message,shiftFactor)
-    res_string = ""
-    upp_case_arr = Array.new
-    low_case_arr = Array.new
+def caesar_cipher(message, shiftFactor)
+  res_string = ''
+  upp_case_arr = []
+  low_case_arr = []
 
-    for x in  ('A'..'Z')
-        upp_case_arr.push(x)
-    end 
+  ('A'..'Z').each do |x|
+    upp_case_arr.push(x)
+  end
+  ('a'..'z').each do |x|
+    low_case_arr.push(x)
+  end
 
-    for x in ('a' .. 'z')
-        low_case_arr.push(x)
-    end 
+  message.each_char do |x|
+    res_string += if upp_case_arr.include?(x)
+                    upp_case_arr[(upp_case_arr.find_index(x) + shiftFactor) % 26]
+                  elsif low_case_arr.include?(x)
+                    low_case_arr[(low_case_arr.find_index(x) + shiftFactor) % 26]
+                  else
+                    x
+                  end
+  end
 
-    message.each_char do |x| 
-        if upp_case_arr.include?(x) 
-            res_string += upp_case_arr[(upp_case_arr.find_index(x) + shiftFactor) % 26]
-        elsif (low_case_arr.include?(x))
-            res_string += low_case_arr[(low_case_arr.find_index(x) + shiftFactor) % 26]
-        else
-            res_string += x
-        end 
-    end
+  # p(upp_case_arr)
+  # p(low_case_arr)
 
-    # p(upp_case_arr)
-    # p(low_case_arr)
-    
-    # p(upp_case_arr[4])
-    p res_string
-
+  # p(upp_case_arr[4])
+  p res_string
 end
 
-
-caesar_cipher("What w string!",5)
-
+caesar_cipher('What w string!', 5)
