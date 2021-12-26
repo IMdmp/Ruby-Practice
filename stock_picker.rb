@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-def stock_picker(prices, buy_price = prices[0],buy_day = 0,profit = 0)
+def stock_picker(prices, buy_price = prices[0], buy_day = 0, profit = 0)
   days_max_profit = [0, 0]
 
   prices.each_with_index do |price, day|
