@@ -1,45 +1,71 @@
+# frozen_string_literal: true
+
+class Player
+  attr_accessor :char, :name
+  attr_reader :def_name
+
+  def initialize(char, name, def_name)
+    @def_name = def_name
+    @char = char
+    @name = name
+  end
+end
+
 class TicTacToe
   @board
   @curPlayer
+  @game_not_finished
   def initialize
-    @player1 = Player.new('', '')
-    @player2 = Player.new('', '')
+    @player1 = Player.new('', '', 'Player 1')
+    @player2 = Player.new('', '', 'Player 2')
     players = [@player1, @player2]
     @curPlayer = @player1
+    @board = Board.new
+    @game_not_finished = true
   end
 
   def cyclePlayer
     @curPlayer = if @curPlayer == @player1
                    @player2
                  else
-      @player1
+                   @player1
                  end
   end
 
-  def self.PlayGame
-    puts 'Welcome to TicTacToe.'
-    if @curPlayer.name == ''
-      puts 'Enter name for :'
-      name = gets.chomp
-      @curPlayer = Player.new(TicTacToe.GetCharInput, name)
-    end
-
-    puts "#{@curPlayer.name} You are #{@curPlayer.char}."
-    cyclePlayer
-    puts 'Enter name for Player2:'
-    name = gets.chomp
-
-    @curPlayer = Player.new(TicTacToe.GetCharInput, name)
-    puts "#{@curPlayer.name} You are #{@curPlayer.char}."
-
-    puts 'Player1: Here is the grid:'
-    TicTacToe.DisplayBoard
-    puts 'Select Grid to enter X. [1-9]'
-    gets.chomp
+  def display_board
+    @board.PrintBoard
   end
 
-  def self.DisplayBoard
-    board.PrintBoard
+  def PlayGame
+    puts 'Welcome to TicTacToe.'
+
+    @curPlayer = check_player_data(@curPlayer)
+    cyclePlayer
+    @curPlayer = check_player_data(@curPlayer)
+
+    puts "Done."
+    cyclePlayer
+
+    while @game_not_finished
+    puts "#{@curPlayer.name}: Here is the grid:"
+    display_board
+    puts "Select Grid to enter #{@curPlayer.char} [1-9]"
+    selected_input = gets.chomp
+    @board.insert_item(@curPlayer.char, selected_input.to_i)
+    display_board
+    cyclePlayer
+    end
+  end
+
+  def check_player_data(player)
+    if player.name == ''
+      puts "Enter name for #{player.def_name}:"
+      name = gets.chomp
+      char_selected = TicTacToe.GetCharInput
+      player.name = name
+      player.char = char_selected
+    end
+    player
   end
 
   def self.GetCharInput
@@ -55,7 +81,12 @@ class TicTacToe
 end
 
 class Board
-  @@matrix = Array.new(9)
+  @matrix 
+
+  def initialize
+    @matrix = Array.new(9)
+  end
+
   def self.PrintBoardSample
     puts '- - - -'
     puts '| | | |'
@@ -66,38 +97,34 @@ class Board
     puts '- - - -'
   end
 
-  def self.PrintBoard
-    @@matrix.each_with_index do |item, index|
+  def PrintBoard
+    @matrix.each_with_index do |item, index|
       print "\n" if [3, 6].include?(index)
-      puts '-   -   -   -' if index % 3 == 0
+      puts '-   -   -   -' if (index % 3).zero?
       print '| '
-      item != nil ? print "#{item} " : print '  '
+      if !item.nil?
+        print "#{item} "
+      else
+        print '  '
+      end
       print '|' if [2, 5, 8].include?(index)
     end
 
     puts "\n-   -   -   -"
   end
 
-  def self.InsertItem(item, index)
-    @@matrix[index - 1] = item
+  def insert_item(item, index)
+    @matrix[index - 1] = item
   end
 end
 
-class Player
-  attr_accessor :char, :name
+tic_tac_toe = TicTacToe.new
+tic_tac_toe.PlayGame
 
-  def initialize(char, name)
-    @char = char
-    @name = name
-  end
-end
-
-TicTacToe.PlayGame
-
-# Board.InsertItem('X',1)
-# Board.InsertItem('0',2)
-# Board.InsertItem('0',8)
-# Board.InsertItem('X',5)
-# Board.InsertItem('X',9)
+# Board.insert_it('X', 1)
+# Board.insert_it('0', 2)
+# Board.insert_it('0', 8)
+# Board.insert_it('X', 5)
+# Board.insert_it('X', 9)
 
 # Board.PrintBoard

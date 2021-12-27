@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 def caesar_cipher(message, shiftFactor)
   res_string = ''
   upp_case_arr = []

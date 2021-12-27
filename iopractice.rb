@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 location = '/Users/Nicky/Desktop/lorem.txt'
 # fd = IO.sysopen location
 # lorem = IO.new(fd)

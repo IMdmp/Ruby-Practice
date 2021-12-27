@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 def substrings(word, sub_string)
   word.split(' ').each do |word_item|
     puts word_item

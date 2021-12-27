@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 def bubble_sort(arr)
   (arr.length - 1).downto(0).each do |y|
     (0..y - 1).each do |x|
