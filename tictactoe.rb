@@ -13,81 +13,88 @@ end
 
 class TicTacToe
   @board
-  @curPlayer
+  @cur_player
   @game_not_finished
   def initialize
     @player1 = Player.new('', '', 'Player 1')
     @player2 = Player.new('', '', 'Player 2')
-    players = [@player1, @player2]
-    @curPlayer = @player1
+    @cur_player = @player1
     @board = Board.new
     @game_not_finished = true
   end
 
-  def cyclePlayer
-    @curPlayer = if @curPlayer == @player1
-                   @player2
-                 else
-                   @player1
-                 end
+  def cycle_player
+    @cur_player = if @cur_player == @player1
+                    @player2
+                  else
+                    @player1
+                  end
   end
 
   def display_board
-    @board.PrintBoard
+    @board.print_board
   end
 
-  def PlayGame
+  def check_game_finished
+    !@board.game_finished
+  end
+
+  def play_game
     puts 'Welcome to TicTacToe.'
+    @cur_player = check_player_data(@cur_player)
+    cycle_player
+    @cur_player = check_player_data(@cur_player)
 
-    @curPlayer = check_player_data(@curPlayer)
-    cyclePlayer
-    @curPlayer = check_player_data(@curPlayer)
-
-    puts "Done."
-    cyclePlayer
+    puts 'Done.'
+    cycle_player
 
     while @game_not_finished
-    puts "#{@curPlayer.name}: Here is the grid:"
-    display_board
-    puts "Select Grid to enter #{@curPlayer.char} [1-9]"
-    selected_input = gets.chomp
-    @board.insert_item(@curPlayer.char, selected_input.to_i)
-    display_board
-    cyclePlayer
+      puts "#{@cur_player.name}: Here is the grid:"
+      display_board
+      puts "Select Grid to enter #{@cur_player.char} [1-9]"
+      selected_input = gets.chomp
+      @board.insert_item(@cur_player.char, selected_input.to_i)
+      display_board
+      @game_not_finished = check_game_finished
+      cycle_player
     end
+
+    puts 'Game Finished. Board:'
+    display_board
   end
 
   def check_player_data(player)
     if player.name == ''
       puts "Enter name for #{player.def_name}:"
       name = gets.chomp
-      char_selected = TicTacToe.GetCharInput
+      char_selected = TicTacToe.get_char_input
       player.name = name
       player.char = char_selected
     end
     player
   end
 
-  def self.GetCharInput
-    capturedChar = ''
+  def self.get_char_input
+    captured_char = ''
 
-    while capturedChar != 'X' && capturedChar != 'O'
+    while captured_char != 'X' && captured_char != 'O'
       puts 'What will you be? Enter [X] or [O]'
-      capturedChar = gets.chomp
+      captured_char = gets.chomp
     end
 
-    capturedChar
+    captured_char
   end
 end
 
 class Board
-  @matrix 
-
+  @matrix
+  @counter
   def initialize
     @matrix = Array.new(9)
+    @counter = 0
   end
 
-  def self.PrintBoardSample
+  def self.print_boardSample
     puts '- - - -'
     puts '| | | |'
     puts '- - - -'
@@ -97,7 +104,7 @@ class Board
     puts '- - - -'
   end
 
-  def PrintBoard
+  def print_board
     @matrix.each_with_index do |item, index|
       print "\n" if [3, 6].include?(index)
       puts '-   -   -   -' if (index % 3).zero?
@@ -115,16 +122,13 @@ class Board
 
   def insert_item(item, index)
     @matrix[index - 1] = item
+    @counter += 1
+  end
+
+  def game_finished
+    @counter >= 9
   end
 end
 
 tic_tac_toe = TicTacToe.new
-tic_tac_toe.PlayGame
-
-# Board.insert_it('X', 1)
-# Board.insert_it('0', 2)
-# Board.insert_it('0', 8)
-# Board.insert_it('X', 5)
-# Board.insert_it('X', 9)
-
-# Board.PrintBoard
+tic_tac_toe.play_ga
