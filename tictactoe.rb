@@ -60,7 +60,7 @@ class TicTacToe
         break
       end
 
-      if !check_game_finished_tie
+      unless check_game_finished_tie
         puts 'Its a tie!'
         break
       end
