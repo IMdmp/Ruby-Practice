@@ -35,8 +35,8 @@ class TicTacToe
     @board.print_board
   end
 
-  def check_game_finished
-    !@board.game_finished
+  def check_game_finished_tie
+    !@board.game_finished_tie
   end
 
   def play_game
@@ -48,14 +48,22 @@ class TicTacToe
     puts 'Done.'
     cycle_player
 
-    while @game_not_finished
+    while true
       puts "#{@cur_player.name}: Here is the grid:"
       display_board
       puts "Select Grid to enter #{@cur_player.char} [1-9]"
       selected_input = gets.chomp
       @board.insert_item(@cur_player.char, selected_input.to_i)
       display_board
-      @game_not_finished = check_game_finished
+      if @board.has_winning_combination(@cur_player.char)
+        puts "Game finished! #{@cur_player.name} Wins!"
+        break
+      end
+
+      if !check_game_finished_tie
+        puts 'Its a tie!'
+        break
+      end
       cycle_player
     end
 
@@ -125,10 +133,33 @@ class Board
     @counter += 1
   end
 
-  def game_finished
+  def has_winning_combination(char_to_compare)
+    check_horizontal_patterns(char_to_compare) || check_vertical_patterns(char_to_compare) || check_diagonal_patterns(char_to_compare)
+  end
+
+  def check_horizontal_patterns(char_to_compare)
+    @matrix[0] == char_to_compare && @matrix[1] == char_to_compare && @matrix[2] == char_to_compare ||
+      @matrix[3] == char_to_compare && @matrix[4] == char_to_compare && @matrix[5] == char_to_compare ||
+      @matrix[6] == char_to_compare && @matrix[7] == char_to_compare && @matrix[8] == char_to_compare
+  end
+
+  def check_vertical_patterns(char_to_compare)
+    @matrix[0] == char_to_compare && @matrix[3] == char_to_compare && @matrix[6] == char_to_compare ||
+      @matrix[1] == char_to_compare && @matrix[4] == char_to_compare && @matrix[7] == char_to_compare ||
+      @matrix[2] == char_to_compare && @matrix[5] == char_to_compare && @matrix[8] == char_to_compare
+  end
+
+  def check_diagonal_patterns(char_to_compare)
+    puts "Diagonal Check: #{char_to_compare}"
+    p @matrix
+    @matrix[0] == char_to_compare && @matrix[4] == char_to_compare && @matrix[8] == char_to_compare ||
+      @matrix[6] == char_to_compare && @matrix[4] == char_to_compare && @matrix[2] == char_to_compare
+  end
+
+  def game_finished_tie
     @counter >= 9
   end
 end
 
 tic_tac_toe = TicTacToe.new
-tic_tac_toe.play_ga
+tic_tac_toe.play_game
